@@ -88,8 +88,8 @@
         .btn-group { display: flex; gap: 1rem; align-items: center;}
 
         button {
-            border: none; padding: 0.8rem 1.8rem; border-radius: 9999px;
-            font-size: 0.95rem; font-weight: 500; cursor: pointer;
+            border: none; padding: 0.6rem 1.4rem; border-radius: 9999px;
+            font-size: 0.75rem; font-weight: 500; cursor: pointer;
             transition: background-color 0.3s ease-in-out; color: #fff;
         }
 
@@ -107,8 +107,16 @@
 
         .grid-container {
             flex: 1; display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(2, 1fr);
             gap: 0.8rem; min-height: 0; 
+        }
+
+        @media (max-width: 800px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: auto;
+            }
         }
 
         .card {
@@ -116,7 +124,7 @@
             border-radius: 10px; padding: 1rem;
             display: flex; flex-direction: column;
             transition: background-color 0.3s ease-in-out;
-            min-height: 180px;
+            min-height: 160px;
         }
 
         .card:hover, .card:focus-within { background: var(--primary-container); }
