@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D.O.P.A.M.I.N.E. Sanctuary</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500&family=Manrope:wght@400;700;800&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+
+        :root {
+            /* Palette */
+            --surface: #fbf9f4;
+            --surface-container-low: #f5f4ed;
+            --surface-container-lowest: #ffffff;
+            --surface-container-high: #ebeae4;
+            
+            --primary: #4c6557; 
+            --primary-dim: #40584b;
+            --primary-container: rgba(76, 101, 87, 0.05);
+            --primary-glow: rgba(76, 101, 87, 0.4); 
+            
+            --secondary: #64889c; 
+            --secondary-dim: #547486;
+            --secondary-container: rgba(100, 136, 156, 0.1);
+
+            --on-surface: #2d312e;
+            --on-surface-variant: #5c635a;
+            --outline-variant: #b2b2ab;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0; padding: 0;
+            font-family: 'Lexend', 'Noto Sans TC', sans-serif;
+            color: var(--on-surface);
+        }
+
+        body {
+            background-color: var(--surface);
+            height: 100vh; overflow: hidden;
+            display: flex; flex-direction: column;
+            padding: 7rem 3rem 2rem 3rem; 
+            transition: all 0.3s ease;
+        }
+
+        .top-panel {
+            display: flex; justify-content: space-between; align-items: flex-end;
+            margin-bottom: 2rem; flex-shrink: 0;
+        }
+
+        .header-left { display: flex; flex-direction: column; gap: 1rem; }
+        .title-row { display: flex; align-items: center; gap: 1rem; }
+
+        h1 {
+            font-family: 'Manrope', 'Noto Sans TC', sans-serif;
+            font-size: 3.5rem; font-weight: 800; color: var(--on-surface-variant);
+            letter-spacing: -1px; line-height: 1;
+        }
+
+        .lang-btn {
+            background: var(--surface-container-high); color: var(--on-surface-variant);
+            border: none; border-radius: 9999px; padding: 0.4rem 0.8rem;
+            font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: 0.2s;
+            font-family: 'Manrope', sans-serif;
+        }
+        .lang-btn:hover { background: var(--outline-variant); color: #fff; }
+
+        .progress-wrapper { display: flex; align-items: center; gap: 1rem; width: 350px; }
+
+        .progress-bar-bg {
+            flex-grow: 1; height: 8px; background: var(--surface-container-high);
+            border-radius: 9999px; overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            width: 0%; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .progress-text { 
+            font-family: 'Manrope', sans-serif; font-weight: 700; 
+            font-size: 0.9rem; color: var(--on-surface-variant);
+        }
+
+        .btn-group { display: flex; gap: 1rem; align-items: center;}
+
+        button {
+            border: none; padding: 0.8rem 1.8rem; border-radius: 9999px;
+            font-size: 0.95rem; font-weight: 500; cursor: pointer;
+            transition: background-color 0.3s ease-in-out; color: #fff;
+        }
+
+        .btn-primary { background: var(--primary); }
+        .btn-primary:hover { background: var(--primary-dim); }
+        
+        .btn-secondary { background: var(--secondary); opacity: 0.9;}
+        .btn-secondary:hover { background: var(--secondary-dim); opacity: 1;}
+
+        .btn-tertiary { 
+            background: transparent; color: var(--on-surface-variant); 
+            border: 1px solid var(--outline-variant); padding: 0.7rem 1.4rem;
+        }
+        .btn-tertiary:hover { background: var(--surface-container-high); }
+
+        .grid-container {
+            flex: 1; display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 1.4rem; min-height: 0; 
+        }
+
+        .card {
+            background: var(--surface-container-lowest);
+            border-radius: 16px; padding: 1.5rem;
+            display: flex; flex-direction: column;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .card:hover, .card:focus-within { background: var(--primary-container); }
+
+        .card-header { display: flex; align-items: flex-start; margin-bottom: 0.8rem; }
+
+        .letter {
+            font-family: 'Manrope', sans-serif; font-size: 2.2rem; font-weight: 300;
+            color: var(--primary); margin-right: 0.8rem; line-height: 1; transform: translateY(-4px); 
+        }
+
+        .val-o .letter, .val-i .letter { color: var(--secondary); }
+
+        .title-group h2 { 
+            font-family: 'Manrope', sans-serif; font-size: 1.15rem; font-weight: 700;
+            color: var(--on-surface-variant); margin-bottom: 0.2rem; 
+        }
+        .title-group p { 
+            color: var(--on-surface-variant); font-size: 0.8rem; line-height: 1.3; opacity: 0.8;
+        }
+
+        label { display: none; }
+
+        textarea, input[type="text"] {
+            width: 100%; background: var(--surface-container-high);
+            border: none; border-bottom: 2px solid transparent; border-radius: 0.75rem;
+            padding: 1rem; font-size: 0.95rem; color: var(--on-surface);
+            transition: all 0.3s ease-in-out; margin-bottom: 0.5rem;
+        }
+
+        textarea { flex: 1; resize: none; margin-bottom: 0; min-height: 0; }
+
+        textarea:focus, input[type="text"]:focus, input[type="date"]:focus {
+            outline: none; border-bottom: 2px solid var(--secondary);
+            box-shadow: 0 0 0 4px rgba(100, 136, 156, 0.3);
+            background: var(--surface-container-lowest);
+        }
+
+        textarea::placeholder, input[type="text"]::placeholder {
+            color: var(--on-surface-variant); opacity: 0.6;
+        }
+        
+        /* Highlight state for when example is loaded */
+        .example-loaded {
+            animation: pulse-glow 1.5s ease-out;
+        }
+        
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 0 0 rgba(100, 136, 156, 0.5); }
+            50% { box-shadow: 0 0 0 10px rgba(100, 136, 156, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(100, 136, 156, 0); }
+        }
+
+        .abstinence-card .content-wrapper {
+            flex: 1; display: flex; flex-direction: column;
+            justify-content: space-evenly; padding: 0;
+        }
+
+        .checkbox-wrapper {
+            display: flex; align-items: flex-start; cursor: pointer;
+            font-size: 0.85rem; color: var(--on-surface); margin-bottom: 0.5rem;
+        }
+        
+        .checkbox-wrapper input {
+            width: 18px; height: 18px; margin-right: 10px; 
+            accent-color: var(--primary); flex-shrink: 0; margin-top: 2px;
+        }
+
+        .checkbox-wrapper input:focus {
+            outline: none; box-shadow: 0 0 0 4px var(--primary-glow); border-radius: 2px;
+        }
+
+        .date-row {
+            display: flex; align-items: center; justify-content: space-between;
+            font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--on-surface-variant);
+        }
+
+        input[type="date"] {
+            background: var(--surface-container-high); border: none;
+            border-bottom: 2px solid transparent; color: var(--on-surface); 
+            padding: 0.6rem; border-radius: 0.5rem; font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .abstinence-counter {
+            text-align: center; background: var(--surface-container-low);
+            border-radius: 0.75rem; padding: 0.8rem; margin-top: auto;
+        }
+
+        .days-number {
+            font-family: 'Manrope', sans-serif; font-size: 2rem; font-weight: 800;
+            color: var(--primary); line-height: 1; margin: 0.2rem 0; letter-spacing: -1px;
+        }
+
+        .counter-text { font-size: 0.75rem; color: var(--on-surface-variant); }
+
+        #assessment-modal {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(45, 49, 46, 0.4); z-index: 1000; backdrop-filter: blur(4px);
+            justify-content: center; align-items: center;
+        }
+
+        .modal-content {
+            background: var(--surface); border: none; border-radius: 24px; 
+            padding: 3rem; max-width: 500px; width: 90%; text-align: center; 
+            box-shadow: 0 20px 40px rgba(100, 136, 156, 0.15); 
+            animation: fadeIn 0.4s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .modal-icon { font-size: 3rem; margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+
+    <div class="top-panel">
+        <div class="header-left">
+            <div class="title-row">
+                <h1>D.O.P.A.M.I.N.E.</h1>
+                <button class="lang-btn" onclick="toggleLanguage()" id="lang-btn">EN</button>
+            </div>
+            <div class="progress-wrapper">
+                <span class="progress-text" data-i18n="completion">完成度</span>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progress-bar"></div>
+                </div>
+                <span class="progress-text" id="progress-text">0%</span>
+            </div>
+        </div>
+        <div class="btn-group">
+            <button type="button" class="btn-tertiary" onclick="loadExampleData()" data-i18n="example_btn">載入範例</button>
+            <button type="button" class="btn-secondary" onclick="clearData()" data-i18n="reset_btn">清除</button>
+            <button type="button" class="btn-primary" onclick="checkStatus()" data-i18n="review_btn">檢視當前狀態</button>
+        </div>
+    </div>
+
+    <form id="dopamine-form" class="grid-container">
+        <!-- D -->
+        <div class="card val-d">
+            <div class="card-header">
+                <div class="letter">D</div>
+                <div class="title-group"><h2 data-i18n="d_title">Data (收集數據)</h2><p data-i18n="d_desc">不帶批判地審視輸入</p></div>
+            </div>
+            <input type="text" id="d-target" class="save-target" data-placeholder="d_sub1" placeholder="針對的目標物 (例如 短影音)...">
+            <textarea id="d-usage" class="save-target" data-placeholder="d_sub2" placeholder="使用頻率與模式..."></textarea>
+        </div>
+
+        <!-- O -->
+        <div class="card val-o">
+            <div class="card-header">
+                <div class="letter">O</div>
+                <div class="title-group"><h2 data-i18n="o_title">Objective (客觀審視)</h2><p data-i18n="o_desc">神經系統的感官體驗</p></div>
+            </div>
+            <textarea id="o-feelings" class="save-target" data-placeholder="o_sub" placeholder="這個行為在當下帶給我什麼感覺？"></textarea>
+        </div>
+
+        <!-- P -->
+        <div class="card val-p">
+            <div class="card-header">
+                <div class="letter">P</div>
+                <div class="title-group"><h2 data-i18n="p_title">Problems (發現問題)</h2><p data-i18n="p_desc">對生活的具體破壞</p></div>
+            </div>
+            <textarea id="p-impact" class="save-target" data-placeholder="p_sub" placeholder="對健康、人際或工作造成的摩擦..."></textarea>
+        </div>
+
+        <!-- A -->
+        <div class="card abstinence-card val-a">
+            <div class="card-header">
+                <div class="letter">A</div>
+                <div class="title-group"><h2 data-i18n="a_title">Abstinence (30天戒斷)</h2><p data-i18n="a_desc">重置大腦回饋基準</p></div>
+            </div>
+            <div class="content-wrapper">
+                <label class="checkbox-wrapper">
+                    <input type="checkbox" id="a-commit" class="save-target">
+                    <span data-i18n="a_commit">我承諾進行 30 天嚴格戒斷</span>
+                </label>
+                <div class="date-row">
+                    <span data-i18n="a_start">起始日：</span>
+                    <input type="date" id="a-start-date" class="save-target">
+                </div>
+                <div class="abstinence-counter">
+                    <div class="counter-text" data-i18n="a_streak">目前已撐過</div>
+                    <div class="days-number" id="abstinence-days">0</div>
+                    <div class="counter-text" data-i18n="a_days">天</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- M -->
+        <div class="card val-m">
+            <div class="card-header">
+                <div class="letter">M</div>
+                <div class="title-group"><h2 data-i18n="m_title">Mindfulness (正念覺察)</h2><p data-i18n="m_desc">直面空虛與渴望</p></div>
+            </div>
+            <textarea id="m-strategy" class="save-target" data-placeholder="m_sub" placeholder="當渴望來襲時，我的著陸與應對策略..."></textarea>
+        </div>
+
+        <!-- I -->
+        <div class="card val-i">
+            <div class="card-header">
+                <div class="letter">I</div>
+                <div class="title-group"><h2 data-i18n="i_title">Insight (獲得洞察)</h2><p data-i18n="i_desc">寂靜中誕生的清醒</p></div>
+            </div>
+            <textarea id="i-discovery" class="save-target" data-placeholder="i_sub" placeholder="這個行為背後，掩蓋了什麼真實的需求？"></textarea>
+        </div>
+
+        <!-- N -->
+        <div class="card val-n">
+            <div class="card-header">
+                <div class="letter">N</div>
+                <div class="title-group"><h2 data-i18n="n_title">Next Steps (下一步)</h2><p data-i18n="n_desc">構築新的健康界線</p></div>
+            </div>
+            <textarea id="n-plan" class="save-target" data-placeholder="n_sub" placeholder="未來的長期使用規劃與參數限制..."></textarea>
+        </div>
+
+        <!-- E -->
+        <div class="card val-e">
+            <div class="card-header">
+                <div class="letter">E</div>
+                <div class="title-group"><h2 data-i18n="e_title">Experiment (實驗與優化)</h2><p data-i18n="e_desc">動態測試與調整</p></div>
+            </div>
+            <textarea id="e-log" class="save-target" data-placeholder="e_sub" placeholder="微調與測試時遭遇的摩擦紀錄..."></textarea>
+        </div>
+    </form>
+
+    <div id="assessment-modal">
+        <div class="modal-content">
+            <div class="modal-icon" id="modal-icon">🌿</div>
+            <h2 id="modal-title" style="margin-bottom: 0.8rem; color: var(--on-surface-variant); font-family: 'Manrope';">系統檢核</h2>
+            <p id="modal-message" style="margin-bottom: 2rem; color: var(--on-surface); line-height: 1.6; font-size: 0.95rem;"></p>
+            <button onclick="document.getElementById('assessment-modal').style.display='none'" style="width: 100%; border:none; padding:1rem; border-radius:99px; background:var(--primary); color:#fff; cursor:pointer;" data-i18n="modal_return">返回日誌</button>
+        </div>
+    </div>
+
+    <script>
+        // ======= i18n Dictionary & Example Data =======
+        const examples = {
+            zh: {
+                d_target: "社群短影音 (Reels / TikTok)",
+                d_usage: "每天晚上睡前原本只想滑 10 分鐘，最後總是無意識地滑超過 2 小時才捨得睡覺。",
+                o_feelings: "滑的當下大腦覺得放空、麻木，但一旦停下來準備去睡覺，心跳會加速，內心的焦慮感反而變得更重。",
+                p_impact: "長期熬夜導致隔天早晨爬不起來，白天工作完全無法集中注意力，甚至因此被主管約談。",
+                a_commit: true,
+                m_strategy: "當手指下意識想點開 App 時，要求自己先閉上眼深呼吸 10 次。感受那個『極度渴望被刺激』的胸悶與焦躁感，告訴自己『這只是多巴胺在作祟，我不需要它』。",
+                i_discovery: "我發現我其實不是真的喜歡看那些影片，我只是無法忍受獨處時的安靜跟工作帶來的壓力，手機只是我的逃避機制。",
+                n_plan: "30天挑戰結束後，我不在臥室放手機，睡前改看實體書。如果真的想滑短影音，只能在週末下午的客廳滑最多 30 分鐘。",
+                e_log: "第一週測試：把手機放在客廳充電，睡眠品質大幅改善。但週末下午 30 分鐘的限制很容易破功，下週考慮直接把 App 刪除，改用網頁版觀看以增加阻力。"
+            },
+            en: {
+                d_target: "Short-form video apps (TikTok / Reels)",
+                d_usage: "Scrolling in bed every night. I intend to watch for 10 minutes, but it always turns into 2+ mindless hours.",
+                o_feelings: "While scrolling, my brain feels numb and detached. But the moment I stop to sleep, my heart races and the underlying anxiety hits me twice as hard.",
+                p_impact: "Chronic sleep deprivation. I can't wake up on time, and my daytime focus is completely shattered. My manager recently spoke to me about performance.",
+                a_commit: true,
+                m_strategy: "When the impulse to open the app strikes, I force myself to sit still and take 10 deep breaths. I observe the 'craving' as a physical tension in my chest, reminding myself this is just a chemical urge, not a real need.",
+                i_discovery: "I realized I don't actually enjoy the videos. I was just using them as an escape hatch because I couldn't tolerate the silence and my work-related stress.",
+                n_plan: "Post 30-day reset: The phone no longer enters the bedroom. I read physical books before sleep. If I absolutely must scroll, it is restricted to 30 minutes on weekend afternoons in the living room.",
+                e_log: "Week 1 adjustment: Charging the phone in the living room improved my sleep massively. However, the 30-minute weekend limit was too hard to maintain. Next week I will delete the native apps and only use the painful browser version to add friction."
+            }
+        };
+
+        const i18n = {
+            zh: {
+                completion: "完成度", reset_btn: "清除", review_btn: "檢視當前狀態", example_btn: "載入範例",
+                d_title: "Data (收集數據)", d_desc: "不帶批判地審視輸入", d_sub1: "針對的目標物 (例如 短影音)...", d_sub2: "使用頻率與模式...",
+                o_title: "Objective (客觀審視)", o_desc: "神經系統的感官體驗", o_sub: "這個行為在當下帶給我什麼感覺？",
+                p_title: "Problems (發現問題)", p_desc: "對生活的具體破壞", p_sub: "對健康、人際或工作造成的摩擦...",
+                a_title: "Abstinence (30天戒斷)", a_desc: "重置大腦回饋基準", a_commit: "我承諾進行 30 天嚴格戒斷", a_start: "起始日：", a_streak: "目前已撐過", a_days: "天",
+                m_title: "Mindfulness (正念覺察)", m_desc: "直面空虛與渴望", m_sub: "當渴望來襲時，我的著陸與應對策略...",
+                i_title: "Insight (獲得洞察)", i_desc: "寂靜中誕生的清醒", i_sub: "這個行為背後，掩蓋了什麼真實的需求？",
+                n_title: "Next Steps (下一步)", n_desc: "構築新的健康界線", n_sub: "未來的長期使用規劃與參數限制...",
+                e_title: "Experiment (實驗與優化)", e_desc: "動態測試與調整", e_sub: "微調與測試時遭遇的摩擦紀錄...",
+                lang_toggle: "EN", modal_return: "返回日誌"
+            },
+            en: {
+                completion: "Completion", reset_btn: "Clear", review_btn: "Review Insights", example_btn: "Load Example",
+                d_title: "Data", d_desc: "Observe without judgment", d_sub1: "Subject of focus (e.g. social scrolling)...", d_sub2: "Usage patterns and frequency...",
+                o_title: "Objective", o_desc: "Sensory experience", o_sub: "How does this behavior feel in the nervous system?",
+                p_title: "Problems", p_desc: "Structural impact", p_sub: "Frictions caused in health, relationships, or work...",
+                a_title: "Abstinence", a_desc: "The 30-day baseline reset", a_commit: "I commit to a 30-day strict reset", a_start: "Start Date:", a_streak: "Current Streak", a_days: "Days",
+                m_title: "Mindfulness", m_desc: "Navigating the void", m_sub: "Grounding strategies when dopaminergic seeking arises...",
+                i_title: "Insight", i_desc: "Clarity born of quiet", i_sub: "What underlying needs were masked by the behavior?",
+                n_title: "Next Steps", n_desc: "Architecting the baseline", n_sub: "The structural parameters for moving forward...",
+                e_title: "Experiment", e_desc: "Iteration and observation", e_sub: "Noting frictions and adjusting the boundaries...",
+                lang_toggle: "中文", modal_return: "Return to Journal"
+            }
+        };
+
+        let currentLang = 'zh';
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'zh' ? 'en' : 'zh';
+            document.getElementById('lang-btn').innerText = i18n[currentLang].lang_toggle;
+            
+            // Translate existing strings
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[currentLang][key]) el.innerText = i18n[currentLang][key];
+            });
+
+            // Translate placeholders
+            const inputs = document.querySelectorAll('[data-placeholder]');
+            inputs.forEach(el => {
+                const key = el.getAttribute('data-placeholder');
+                if (i18n[currentLang][key]) el.setAttribute('placeholder', i18n[currentLang][key]);
+            });
+        }
+
+        // ======= Logic =======
+        const inputs = document.querySelectorAll('.save-target');
+        
+        function loadData() {
+            inputs.forEach(input => {
+                const saved = localStorage.getItem(`dopamine_tracker_${input.id}`);
+                if (saved !== null) {
+                    if (input.type === 'checkbox') input.checked = saved === 'true';
+                    else input.value = saved;
+                }
+            });
+            updateProgress();
+            updateDaysCtr();
+        }
+
+        inputs.forEach(input => {
+            input.addEventListener('input', (e) => {
+                if (e.target.type === 'checkbox') localStorage.setItem(`dopamine_tracker_${e.target.id}`, e.target.checked);
+                else localStorage.setItem(`dopamine_tracker_${e.target.id}`, e.target.value);
+                
+                updateProgress();
+                if(e.target.id === 'a-start-date') updateDaysCtr();
+            });
+        });
+
+        function updateProgress() {
+            let filledCount = 0;
+            inputs.forEach(input => {
+                if (input.type === 'checkbox' && input.checked) filledCount++;
+                else if (input.type !== 'checkbox' && input.value.trim() !== '') filledCount++;
+            });
+            const p = Math.round((filledCount / inputs.length) * 100);
+            document.getElementById('progress-bar').style.width = p + '%';
+            document.getElementById('progress-text').innerText = p + '%';
+        }
+
+        function updateDaysCtr() {
+            const dateStr = document.getElementById('a-start-date').value;
+            const daysEl = document.getElementById('abstinence-days');
+            if (!dateStr) {
+                daysEl.innerText = '-';
+                daysEl.style.color = 'var(--on-surface-variant)';
+                return;
+            }
+            const st = new Date(dateStr); const today = new Date();
+            st.setHours(0,0,0,0); today.setHours(0,0,0,0);
+            const diffDays = Math.ceil(Math.abs(today - st) / 86400000); 
+            
+            if(today < st) {
+                daysEl.innerText = '-';
+                daysEl.style.color = 'var(--on-surface-variant)';
+            } else {
+                daysEl.innerText = diffDays;
+                daysEl.style.color = diffDays >= 30 ? 'var(--secondary)' : 'var(--primary)';
+            }
+        }
+
+        function clearData() {
+            const warning = currentLang === 'zh' ? '確定要清除所有紀錄嗎？' : 'Clear all structural data?';
+            if(confirm(warning)) {
+                inputs.forEach(input => {
+                    localStorage.removeItem(`dopamine_tracker_${input.id}`);
+                    if (input.type === 'checkbox') input.checked = false;
+                    else input.value = '';
+                });
+                updateProgress(); updateDaysCtr();
+            }
+        }
+
+        // Feature: Load Example Case (ADHD Scrolling)
+        function loadExampleData() {
+            const confirmMsg = currentLang === 'zh' 
+                ? '確定要載入範例資料覆蓋目前的輸入嗎？' 
+                : 'Load example data and overwrite current inputs?';
+                
+            if(confirm(confirmMsg)) {
+                const ex = examples[currentLang];
+                document.getElementById('d-target').value = ex.d_target;
+                document.getElementById('d-usage').value = ex.d_usage;
+                document.getElementById('o-feelings').value = ex.o_feelings;
+                document.getElementById('p-impact').value = ex.p_impact;
+                document.getElementById('a-commit').checked = ex.a_commit;
+                
+                // Set date to 18 days ago to show an interesting progress state
+                const demoDate = new Date();
+                demoDate.setDate(demoDate.getDate() - 18);
+                document.getElementById('a-start-date').value = demoDate.toISOString().split('T')[0];
+                
+                document.getElementById('m-strategy').value = ex.m_strategy;
+                document.getElementById('i-discovery').value = ex.i_discovery;
+                document.getElementById('n-plan').value = ex.n_plan;
+                document.getElementById('e-log').value = ex.e_log;
+
+                // Save to localstorage and play visual highlight
+                inputs.forEach(input => {
+                    if (input.type === 'checkbox') localStorage.setItem(`dopamine_tracker_${input.id}`, input.checked);
+                    else localStorage.setItem(`dopamine_tracker_${input.id}`, input.value);
+                    
+                    // Trigger visual cue
+                    const card = input.closest('.card');
+                    card.classList.remove('example-loaded');
+                    void card.offsetWidth; // trigger reflow
+                    card.classList.add('example-loaded');
+                });
+                
+                updateProgress(); 
+                updateDaysCtr();
+            }
+        }
+
+        function checkStatus() {
+            document.getElementById('assessment-modal').style.display = 'flex';
+        }
+
+        window.addEventListener('DOMContentLoaded', loadData);
+    </script>
+</body>
+</html>
